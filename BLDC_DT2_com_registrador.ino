@@ -185,14 +185,16 @@ void DisablePin9(){
 
 void DisablePin10(){
   PWM10 = 1;
-  PMC->PMC_PCDR1 |= PMC_PCDR1_PID34;
   PIOC->PIO_PER |= PIO_PER_P29;
+  PIOC->PIO_OER |= PIO_OER_P29;
+  PIOC->PIO_CODR = 1<<29;
 }
 
 void DisablePin11(){
   PWM11 = 1;
-  PMC->PMC_PCDR1 |= PMC_PCDR1_PID35;
   PIOD->PIO_PER |= PIO_PER_P7;
+  PIOD->PIO_OER |= PIO_OER_P7;
+  PIOD->PIO_CODR = 1<<7;
 }
 
 void EnablePin9(){
@@ -201,12 +203,10 @@ void EnablePin9(){
 }
 
 void EnablePin10(){
-  PMC->PMC_PCER1 |= PMC_PCER1_PID34;
   PIOC->PIO_PDR |= PIO_PDR_P29;  
 }
 
 void EnablePin11(){
-  PMC->PMC_PCER1 |= PMC_PCER1_PID35;
   PIOD->PIO_PDR |= PIO_PDR_P7;  
 }
 
