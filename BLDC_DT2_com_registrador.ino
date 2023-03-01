@@ -60,7 +60,7 @@ void ConfigurePin9(int freq){
 }
 
 void  ConfigurePin10(){
-    /* Passos para configurar o PWM com o Timer Counter
+  /* Passos para configurar o PWM com o Timer Counter
    * 1º Identifique o Instance Name TIOA7, TIOA8 etc. Você pode encontrar isso no DUE Pinout Diagram
    * 2º 2º Identifique o Instance (TC0, TC1, TC2, TC3, TC4 etc.). O número é o mesmo número do Instance Name (TIOA7 tem instance TC7)
    * 3º Identifique o I/O line. Você também encontra na mesma tabela da página 858
@@ -155,27 +155,27 @@ void  ConfigurePin11(){
 }
 
 void TC7_Handler() {
-  TC2->TC_CHANNEL[1].TC_SR;                                 //Read and clear status register so that the interrupt handler fires again and again
-  REG_TC2_RB1 = PWM10;
+  TC2->TC_CHANNEL[1].TC_SR;                                 // Read and clear status register so that the interrupt handler fires again and again
+  REG_TC2_RB1 = PWM10;                                      // Update the Duty Cycle
 }
 
 void TC8_Handler() {
-  TC2->TC_CHANNEL[2].TC_SR;                                 //Read and clear status register so that the interrupt handler fires again and again
-  REG_TC2_RA2 = PWM11;
+  TC2->TC_CHANNEL[2].TC_SR;                                 // Read and clear status register so that the interrupt handler fires again and again
+  REG_TC2_RA2 = PWM11;                                      // Update the Duty Cycle
 }
 
 void DutyCyclePin9(int Duty_Cycle){
-  PWM9 = Duty_Cycle;
+  PWM9 = Duty_Cycle;                                        // Update the variable that changes the Duty Cycle of pin 9
 }
 
 void DutyCyclePin10(int Duty_Cycle){
   int x = map(Duty_Cycle, 0, 100, 0, TC_RC);
-  PWM10 = x;
+  PWM10 = x;                                                // Update the variable that changes the Duty Cycle of pin 10
 }
 
 void DutyCyclePin11(int Duty_Cycle){
   int x = map(Duty_Cycle, 0, 100, 0, TC_RC);
-  PWM11 = x;
+  PWM11 = x;                                                // Update the variable that changes the Duty Cycle of pin 11
 }
 
 void DisablePin9(){
@@ -184,17 +184,17 @@ void DisablePin9(){
 }
 
 void DisablePin10(){
-  PWM10 = 1;
-  PIOC->PIO_PER |= PIO_PER_P29;
-  PIOC->PIO_OER |= PIO_OER_P29;
-  PIOC->PIO_CODR = 1<<29;
+  PWM10 = 1;                                                // Update the Duty Cycle to the less value possible
+  PIOC->PIO_PER |= PIO_PER_P29;                             // Enable the GPIO               
+  PIOC->PIO_OER |= PIO_OER_P29;                             // Configure the GPIO as output
+  PIOC->PIO_CODR = 1<<29;                                   // digitalWrite(10, LOW)
 }
 
 void DisablePin11(){
-  PWM11 = 1;
-  PIOD->PIO_PER |= PIO_PER_P7;
-  PIOD->PIO_OER |= PIO_OER_P7;
-  PIOD->PIO_CODR = 1<<7;
+  PWM11 = 1;                                                // Update the Duty Cycle to the less value possible
+  PIOD->PIO_PER |= PIO_PER_P7;                              // Enable the GPIO
+  PIOD->PIO_OER |= PIO_OER_P7;                              // Configure the GPIO as output
+  PIOD->PIO_CODR = 1<<7;                                    // digitalWrite(11, LOW)
 }
 
 void EnablePin9(){
@@ -203,11 +203,11 @@ void EnablePin9(){
 }
 
 void EnablePin10(){
-  PIOC->PIO_PDR |= PIO_PDR_P29;  
+  PIOC->PIO_PDR |= PIO_PDR_P29;                             // Disable the GPIO
 }
 
 void EnablePin11(){
-  PIOD->PIO_PDR |= PIO_PDR_P7;  
+  PIOD->PIO_PDR |= PIO_PDR_P7;                              // Disable the GPIO
 }
 
 void setup()
