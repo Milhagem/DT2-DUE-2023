@@ -1,4 +1,9 @@
 /*
+ *  Autor: Diego Amaral Castro
+ *  Data: Fevereiro/Março de 2023
+ */
+
+/*
  *  O seguinte código eh utilizado num arduino DUE, cujo papel eh a de um controlador de um motor BLDC
  *  O Arduino recebe sinal dos sensores de efeito hall e comuta os mosfets de acordo com os valores lidos
  *  O motor eh ligado apenas sob certas condicoes de interruptores e fins de curso
