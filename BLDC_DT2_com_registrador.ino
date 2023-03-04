@@ -226,9 +226,9 @@ void setup()
   pinMode(MOSFET_C_HIGH, OUTPUT);
 
   // Saidas PWM LOW SIDE
-  ConfigurePin9(freq);
-  ConfigurePin10();
-  ConfigurePin11();
+  ConfigurePin9(freq);                                      // MOSFET_A_LOW
+  ConfigurePin10();                                         // MOSFET_B_LOW
+  ConfigurePin11();                                         // MOSFET_C_LOW
 
   // Saída Shutdown
   pinMode(shutdownIR, OUTPUT);
@@ -245,7 +245,7 @@ void setup()
 
 }
 void loop() {
-    PIOA->PIO_CODR = 1<<9;                          // Pino ShutdownIR em 0
+    PIOA->PIO_CODR = 1<<9;                                    // Pino ShutdownIR em 0
     tempo_Atual = millis();
     estado_controle = digitalRead(chave_controle);
   
