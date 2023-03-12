@@ -91,7 +91,7 @@ void  ConfigurePin10(){
   PIOC->PIO_PDR |= PIO_PDR_P29;                             // Disable the GPIO on the corresponding pins
 
                                                             // xx significa o I/O line
-//PIOC->PIO_ABSR |= PIO_xx_yy                               // yy significa o Instance Name
+//PIOx->PIO_ABSR |= PIO_xx_yy                               // yy significa o Instance Name
   PIOC->PIO_ABSR |= PIO_PC29B_TIOB7;                        // Switch the multiplexer to peripheral B for TIOB7
 
 //TCx->TC_CHANNEL[y]                                        // Apenas por o que encontrou para o 6º caso
@@ -139,7 +139,7 @@ void  ConfigurePin11(){
   PIOD->PIO_PDR |= PIO_PDR_P7;                              // Disable the GPIO on the corresponding pins
 
                                                             // xx significa o I/O line
-//PIOC->PIO_ABSR |= PIO_xx_yy                               // yy significa o Instance Name  
+//PIOx->PIO_ABSR |= PIO_xx_yy                               // yy significa o Instance Name  
   PIOD->PIO_ABSR |= PIO_PD7B_TIOA8;                         // Switch the multiplexer to peripheral B for TIOA8
 
 //TCx->TC_CHANNEL[y]                                        // Apenas por o que encontrou para o 6º caso
