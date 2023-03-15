@@ -54,7 +54,7 @@ int pwwm = 0;             // Armazena o PWM que ira para os MOSFETs (0 a 100%)
 int PWM9 = 0;             // Variável que atualiza constantemente o Duty Cycle do pino 9 (0 a 100%)
 int PWM10 = 0;            // Variável que atualiza constantemente o Duty Cycle do pino 10 (0 a 100%)
 int PWM11 = 0;            // Variável que atualiza constantemente o Duty Cycle do pino 11 (0 a 100%)
-int freq = 500;           // Frequência do PWM em Hz, esse valor não será mudado ao longo da execução do código
+int freq = 1000;           // Frequência do PWM em Hz, esse valor não será mudado ao longo da execução do código
 int TC_RC = 42000000/freq;// Variável utilizada para definir a frequência dos pinos que usam Timer Counter
 
 
