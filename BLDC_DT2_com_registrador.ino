@@ -230,7 +230,6 @@ void EnablePin11(){
 void setup()
 {
   // Entradas do Arduino MEGA
-  Serial.begin(9600);
   pinMode(hallA, INPUT);
   pinMode(hallB, INPUT);
   pinMode(hallC, INPUT);
