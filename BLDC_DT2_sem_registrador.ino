@@ -25,12 +25,11 @@
 #define hallB 3           // Entrada do sinal do sensor de efeito hall B do motor
 #define hallC 2           // Entrada do sinal do sensor de efeito hall C do motor
 
-#define botao1_pedal 15   // Acionado pelo pedal de aceleracao. Fim de Curso [Dianteiro]. Entrada do botão 1 de aceleracao (Pedal meio pressionado)
-#define botao2_pedal 16   // Acionado pelo pedal de aceleracao. Fim de Curso [Traseiro]. Entrada do botão 2 de aceleracao (Pedal Completamente pressionado)
+#define botao1_pedal 17   // PEDAL INICIO -CHAVE DA FRENTE COM CABO AZUL ACIONAMENTO MOTOR - Acionado pelo pedal de aceleracao. Fim de Curso [Dianteiro]. Entrada do botão 1 de aceleracao (Pedal meio pressionado)
+#define botao2_pedal 18   // PEDAL FIM - Acionado pelo pedal de aceleracao. Fim de Curso [Traseiro]. Entrada do botão 2 de aceleracao (Pedal Completamente pressionado).
 
-#define chave_controle 19 // Configura o valor inicial do PWM nos mosfets. Sendo o valor mais baixo para arrancada e o maior para ao longo da corrida
+#define chave_controle 16 // Configura o valor inicial do PWM nos mosfets. Sendo o valor mais baixo para arrancada e o maior para ao longo da corrida
 #define acelerador 8      // Para ligar o carro sem apertar o pedal. Alternativa para não precisar apertar o pedal ate o fundo
-#define sinal_corrente 22 // Desativa a alimentação se a corrente estiver muito alta
 #define shutdownIR 1      // Pino que desativa o Gate Driver quando o arduino reseta ou liga
 
 int hallA_estado;                                  // Estado do sensor de efeito hall A do motor BLDC
@@ -54,7 +53,12 @@ void setup()
   pinMode(hallB, INPUT);
   pinMode(hallC, INPUT);
   pinMode(sinal_corrente, INPUT);
-
+  
+  // Entradas do sinais da frente
+  pinMode(botao1_pedal, INPUT);
+  pinMode(botao2_pedal,INPUT);
+  pinMode(chave_controle,INPUT);
+  
   // Saídas do Arduino MEGA
   // Saídas para ativação MOSFETs do inversor trifasico
   // Saídas digitais HIGH SIDE
@@ -63,9 +67,9 @@ void setup()
   pinMode(MOSFET_C_HIGH, OUTPUT);
 
   // Saidas PWM LOW SIDE
-  pinMode(9, OUTPUT);
-  pinMode(10, OUTPUT);
-  pinMode(11, OUTPUT);
+  pinMode(MOSFET_A_LOW, OUTPUT);
+  pinMode(MOSFET_B_LOW, OUTPUT);
+  pinMode(MOSFET_C_LOW, OUTPUT);
 
   // Saída Shutdown
   pinMode(shutdownIR, OUTPUT);
@@ -76,12 +80,13 @@ void setup()
   digitalWrite(MOSFET_A_HIGH, LOW);
   digitalWrite(MOSFET_B_HIGH, LOW);
   digitalWrite(MOSFET_C_HIGH, LOW);
-  analogWrite(9, 0);
-  analogWrite(10, 0);
-  analogWrite(11, 0);
+  
+  analogWrite(MOSFET_A_LOW, 0);
+  analogWrite(MOSFET_B_LOW, 0);
+  analogWrite(MOSFET_C_HIGH, 0);
 }
 void loop() {
-    PIOA->PIO_CODR = 1<<9;                          // Pino ShutdownIR em 0
+    PIOA->PIO_CODR = 1 << 9;                          // Pino ShutdownIR em 0
     tempo_Atual = millis();
     estado_controle = digitalRead(chave_controle);
   
@@ -121,8 +126,6 @@ void loop() {
   hallC_estado = digitalRead(hallC); // variavel recebe o valor do estado do sensor de efeito Hall C do motor
 
   hall_val = (hallA_estado) + (2 * hallB_estado) + (4 * hallC_estado); // converte o valor dos 3 sensores Hall para números decimais
-  pwwm = 130;
-
   
   switch (hall_val)
   {
@@ -149,74 +152,80 @@ void loop() {
 
     // FASE 1
   case 5:
-    digitalWrite(5, LOW);     // Pino 5 (AH) desligado
-    digitalWrite(6, LOW);     // Pino 6 (BH) desligado
-    digitalWrite(7, LOW);     // Pino 7 (CH) desligado
-    analogWrite(10, 0);       // Pino 10 (BL) desligado
-    analogWrite(11, 0);       // Pino 11 (CL) desligado
+    digitalWrite(MOSFET_A_HIGH, LOW);     // Pino MOSFET_A_HIGH (AH) desligado
+    digitalWrite(MOSFET_B_HIGH, LOW);     // Pino MOSFET_B_HIGH (BH) desligado
+    digitalWrite(MOSFET_C_HIGH, LOW);     // Pino MOSFET_C_HIGH (CH) desligado
+      
+    analogWrite(MOSFET_B_LOW, 0);       // Pino 10 (BL) desligado
+    analogWrite(MOSFET_C_LOW, 0);       // Pino 11 (CL) desligado
 
-    digitalWrite(6, HIGH);    // Pino 6 (BH) ligado
-    analogWrite(9, pwwm);     // Pino 9 (AL) com PWM ativo
+    digitalWrite(MOSFET_B_HIGH, HIGH);    // Pino 6 (BH) ligado
+    analogWrite(MOSFET_A_LOW, pwwm);     // Pino 9 (AL) com PWM ativo
     break;
     /* ----------------------------------------------------------------------------------------------------------------------- */
     // FASE 2
   case 1:
-    digitalWrite(5, LOW);     // Pino 5 (AH) desligado
-    digitalWrite(6, LOW);     // Pino 6 (BH) desligado
-    digitalWrite(7, LOW);     // Pino 7 (CH) desligado
-    analogWrite(9, 0);        // Pino 9 (AL) desligado
-    analogWrite(10, 0);       // Pino 10 (BL) desligado
+    digitalWrite(MOSFET_A_HIGH, LOW);     // Pino MOSFET_A_HIGH (AH) desligado
+    digitalWrite(MOSFET_B_HIGH, LOW);     // Pino MOSFET_B_HIGH (BH) desligado
+    digitalWrite(MOSFET_C_HIGH, LOW);     // Pino MOSFET_C_HIGH (CH) desligado
+      
+    analogWrite(MOSFET_A_LOW, 0);        // Pino 9 (AL) desligado
+    analogWrite(MOSFET_B_LOW, 0);       // Pino 10 (BL) desligado
 
-    digitalWrite(6, HIGH);    // Pino 6 (BH) ligado
-    analogWrite(11, pwwm);    // Pino 11 (CL) com PWM ativo
+    digitalWrite(MOSFET_B_HIGH, HIGH);    // Pino 6 (BH) ligado
+    analogWrite(MOSFET_C_LOW, pwwm);    // Pino 11 (CL) com PWM ativo
     break;
     /* ----------------------------------------------------------------------------------------------------------------------- */
     // FASE 3
   case 3:
-    digitalWrite(5, LOW);     // Pino 5 (AH) desligado
-    digitalWrite(6, LOW);     // Pino 6 (BH) desligado
-    digitalWrite(7, LOW);     // Pino 7 (CH) desligado
-    analogWrite(9, 0);        // Pino 9 (AL) desligado
-    analogWrite(10, 0);       // Pino 10 (BL) desligado
+    digitalWrite(MOSFET_A_HIGH, LOW);     // Pino MOSFET_A_HIGH (AH) desligado
+    digitalWrite(MOSFET_B_HIGH, LOW);     // Pino MOSFET_B_HIGH (BH) desligado
+    digitalWrite(MOSFET_C_HIGH, LOW);     // Pino MOSFET_C_HIGH (CH) desligado
+      
+    analogWrite(MOSFET_A_LOW, 0);        // Pino 9 (AL) desligado
+    analogWrite(MOSFET_B_LOW, 0);       // Pino 10 (BL) desligado
 
-    digitalWrite(5, HIGH);    // Pino 5 (AH) em High
-    analogWrite(11, pwwm);    // Pino 11 (CL) com PWM ativo   
+    digitalWrite(MOSFET_A_HIGH, HIGH);    // Pino 5 (AH) em High
+    analogWrite(MOSFET_C_LOW, pwwm);    // Pino 11 (CL) com PWM ativo   
     break;
     /* ----------------------------------------------------------------------------------------------------------------------- */
     // FASE 4
   case 2:
-    digitalWrite(5, LOW);     // Pino 5 (AH) desligado
-    digitalWrite(6, LOW);     // Pino 6 (BH) desligado
-    digitalWrite(7, LOW);     // Pino 7 (CH) desligado
-    analogWrite(9, 0);        // Pino 9 (AL) desligado
-    analogWrite(11, 0);       // Pino 11 (CL) desligado
+    digitalWrite(MOSFET_A_HIGH, LOW);     // Pino MOSFET_A_HIGH (AH) desligado
+    digitalWrite(MOSFET_B_HIGH, LOW);     // Pino MOSFET_B_HIGH (BH) desligado
+    digitalWrite(MOSFET_C_HIGH, LOW);     // Pino MOSFET_C_HIGH (CH) desligado
+      
+    analogWrite(MOSFET_A_LOW, 0);        // Pino 9 (AL) desligado
+    analogWrite(MOSFET_C_LOW, 0);       // Pino 11 (CL) desligado
 
-    digitalWrite(5, HIGH);    // Pino 5 (AH) em High
-    analogWrite(10, pwwm);    // Pino 10 (BL) com PWM ativo
+    digitalWrite(MOSFET_A_HIGH, HIGH);    // Pino 5 (AH) em High
+    analogWrite(MOSFET_B_LOW, pwwm);    // Pino 10 (BL) com PWM ativo
     break;
     /* ----------------------------------------------------------------------------------------------------------------------- */
     // FASE 5
   case 6:
-    digitalWrite(5, LOW);     // Pino 5 (AH) desligado
-    digitalWrite(6, LOW);     // Pino 6 (BH) desligado
-    digitalWrite(7, LOW);     // Pino 7 (CH) desligado
-    analogWrite(9, 0);        // Pino 9 (AL) desligado
-    analogWrite(11, 0);       // Pino 11 (CL) desligado
+    digitalWrite(MOSFET_A_HIGH, LOW);     // Pino MOSFET_A_HIGH (AH) desligado
+    digitalWrite(MOSFET_B_HIGH, LOW);     // Pino MOSFET_B_HIGH (BH) desligado
+    digitalWrite(MOSFET_C_HIGH, LOW);     // Pino MOSFET_C_HIGH (CH) desligado
+    
+    analogWrite(MOSFET_A_LOW, 0);        // Pino 9 (AL) desligado
+    analogWrite(MOSFET_C_LOW, 0);       // Pino 11 (CL) desligado
 
-    digitalWrite(7, HIGH);    // Pino 7 (CH) ligado
-    analogWrite(10, pwwm);    // Pino 10 (BL) com PWM ativo
+    digitalWrite(MOSFET_C_HIGH, HIGH);    // Pino 7 (CH) ligado
+    analogWrite(MOSFET_B_LOW, pwwm);    // Pino 10 (BL) com PWM ativo
     break;
     /* ----------------------------------------------------------------------------------------------------------------------- */
     // FASE 6
   case 4:
-    digitalWrite(5, LOW);     // Pino 5 (AH) desligado
-    digitalWrite(6, LOW);     // Pino 6 (BH) desligado
-    digitalWrite(7, LOW);     // Pino 7 (CH) desligado
-    analogWrite(10, 0);       // Pino 10 (BL) desligado
-    analogWrite(11, 0);       // Pino 11 (CL) desligado
+    digitalWrite(MOSFET_A_HIGH, LOW);     // Pino MOSFET_A_HIGH (AH) desligado
+    digitalWrite(MOSFET_B_HIGH, LOW);     // Pino MOSFET_B_HIGH (BH) desligado
+    digitalWrite(MOSFET_C_HIGH, LOW);     // Pino MOSFET_C_HIGH (CH) desligado
+    
+    analogWrite(MOSFET_B_LOW, 0);       // Pino 10 (BL) desligado
+    analogWrite(MOSFET_C_LOW, 0);       // Pino 11 (CL) desligado
 
-    digitalWrite(7, HIGH);    // Pino 7 (CH) ligado
-    analogWrite(9, pwwm);     // Pino 9 (AL) com PWM ativo
+    digitalWrite(MOSFET_C_HIGH, HIGH);    // Pino 7 (CH) ligado
+    analogWrite(MOSFET_A_LOW, pwwm);     // Pino 9 (AL) com PWM ativo
     break;
   }
 }
