@@ -30,8 +30,8 @@
 #define hallB 3           // Entrada do sinal do sensor de efeito hall B do motor
 #define hallC 2           // Entrada do sinal do sensor de efeito hall C do motor
 
-#define botao1_pedal 17   // PEDAL INICIO -CHAVE DA FRENTE COM CABO AZUL ACIONAMENTO MOTOR - Acionado pelo pedal de aceleracao. Fim de Curso [Dianteiro]. Entrada do botão 1 de aceleracao (Pedal meio pressionado)
-#define botao2_pedal 18   // PEDAL FIM - Acionado pelo pedal de aceleracao. Fim de Curso [Traseiro]. Entrada do botão 2 de aceleracao (Pedal Completamente pressionado).
+#define botao1_pedal 17   // PEDAL INICIO -CHAVE DA FRENTE COM CABO AZUL ACIONAMENTO MOTOR - Acionado pelo pedal de aceleracao. Fim de Curso [Dianteiro]. Entrada do botão 1 de aceleracao (Pedal meio pressionado) 
+#define botao2_pedal 18   // PEDAL FIM -  Acionado pelo pedal de aceleracao. Fim de Curso [Traseiro]. Entrada do botão 2 de aceleracao (Pedal Completamente pressionado)
 
 #define chave_controle 16 // Configura o valor inicial do PWM nos mosfets. Sendo o valor mais baixo para arrancada e o maior para ao longo da corrida
 #define acelerador 8      // Para ligar o carro sem apertar o pedal. Alternativa para não precisar apertar o pedal ate o fundo
@@ -170,17 +170,29 @@ void TC8_Handler() {
 }
 
 void DutyCyclePin9(int Duty_Cycle){
-  PWM9 = Duty_Cycle;                                        // Update the variable that changes the Duty Cycle of pin 9
+  if(Duty_Cycle == 0){
+    DisablePin9();      
+  } else {
+    PWM9 = Duty_Cycle;
+  }                                                         // Update the variable that changes the Duty Cycle of pin 9
 }
 
 void DutyCyclePin10(int Duty_Cycle){
   int x = map(Duty_Cycle, 0, 100, 0, TC_RC);
-  PWM10 = x;                                                // Update the variable that changes the Duty Cycle of pin 10
+  if(Duty_Cycle == 0){
+    DisablePin10();
+  } else {
+    PWM10 = x;                                              // Update the variable that changes the Duty Cycle of pin 10
+  }                                              
 }
 
 void DutyCyclePin11(int Duty_Cycle){
   int x = map(Duty_Cycle, 0, 100, 0, TC_RC);
-  PWM11 = x;                                                // Update the variable that changes the Duty Cycle of pin 11
+  if(Duty_Cycle == 0){
+    DisablePin11();                                              // Update the variable that changes the Duty Cycle of pin 11
+  } else {
+    PWM11 = x;
+  }                                          
 }
 
 void DisablePin9(){
@@ -218,14 +230,15 @@ void EnablePin11(){
 void setup()
 {
   // Entradas do Arduino MEGA
+  Serial.begin(9600);
   pinMode(hallA, INPUT);
   pinMode(hallB, INPUT);
   pinMode(hallC, INPUT);
   pinMode(sinal_corrente, INPUT);
-  // Entradas do sinais da frente
   pinMode(botao1_pedal, INPUT);
   pinMode(botao2_pedal,INPUT);
   pinMode(chave_controle,INPUT);
+  pinMode(acelerador, INPUT);
 
   // Saídas do Arduino MEGA
   // Saídas para ativação MOSFETs do inversor trifasico
@@ -275,7 +288,7 @@ void loop() {
     }
   
     // Liga o carro se o pedal estiver completamente pressionado. Ou se o acelerador estiver ligado
-    if( ( (digitalRead(botao2_pedal)== LOW) && (digitalRead(botao1_pedal)== HIGH) ) || (digitalRead(acelerador) == LOW) ){
+    if( digitalRead(acelerador) == LOW || digitalRead(botao1_pedal)){
       if (incremento_rampa < PWM_MAX - inicio_rampa){            // Se o duty cycle do PWM sobre o gate dos MOSFETs ainda eh menor do que PWM_MAX
         if ((tempo_Atual - tempo_Anterior) >= 70){  // Incrementa a cada 70 milisegundos
           incremento_rampa+=1;
@@ -294,6 +307,7 @@ void loop() {
   hallC_estado = digitalRead(hallC); // variavel recebe o valor do estado do sensor de efeito Hall C do motor
 
   hall_val = (hallA_estado) + (2 * hallB_estado) + (4 * hallC_estado); // converte o valor dos 3 sensores Hall para números decimais
+
   
   switch (hall_val)
   {
