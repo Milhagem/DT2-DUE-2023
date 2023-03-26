@@ -30,10 +30,10 @@
 #define hallB 3           // Entrada do sinal do sensor de efeito hall B do motor
 #define hallC 2           // Entrada do sinal do sensor de efeito hall C do motor
 
-#define botao1_pedal 15   // Acionado pelo pedal de aceleracao. Fim de Curso [Dianteiro]. Entrada do botão 1 de aceleracao (Pedal meio pressionado)
-#define botao2_pedal 16   // Acionado pelo pedal de aceleracao. Fim de Curso [Traseiro]. Entrada do botão 2 de aceleracao (Pedal Completamente pressionado)
+#define botao1_pedal 17   // PEDAL INICIO -CHAVE DA FRENTE COM CABO AZUL ACIONAMENTO MOTOR - Acionado pelo pedal de aceleracao. Fim de Curso [Dianteiro]. Entrada do botão 1 de aceleracao (Pedal meio pressionado)
+#define botao2_pedal 18   // PEDAL FIM - Acionado pelo pedal de aceleracao. Fim de Curso [Traseiro]. Entrada do botão 2 de aceleracao (Pedal Completamente pressionado).
 
-#define chave_controle 19 // Configura o valor inicial do PWM nos mosfets. Sendo o valor mais baixo para arrancada e o maior para ao longo da corrida
+#define chave_controle 16 // Configura o valor inicial do PWM nos mosfets. Sendo o valor mais baixo para arrancada e o maior para ao longo da corrida
 #define acelerador 8      // Para ligar o carro sem apertar o pedal. Alternativa para não precisar apertar o pedal ate o fundo
 #define sinal_corrente 22 // Desativa a alimentação se a corrente estiver muito alta
 #define shutdownIR 1      // Pino que desativa o Gate Driver quando o arduino reseta ou liga
