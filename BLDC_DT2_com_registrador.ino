@@ -222,6 +222,10 @@ void setup()
   pinMode(hallB, INPUT);
   pinMode(hallC, INPUT);
   pinMode(sinal_corrente, INPUT);
+  // Entradas do sinais da frente
+  pinMode(botao1_pedal, INPUT);
+  pinMode(botao2_pedal,INPUT);
+  pinMode(chave_controle,INPUT);
 
   // Saídas do Arduino MEGA
   // Saídas para ativação MOSFETs do inversor trifasico
