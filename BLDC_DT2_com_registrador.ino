@@ -54,7 +54,7 @@ int pwwm = 0;             // Armazena o PWM que ira para os MOSFETs (0 a 100%)
 int PWM9 = 0;             // Variável que atualiza constantemente o Duty Cycle do pino 9 (0 a 100%)
 int PWM10 = 0;            // Variável que atualiza constantemente o Duty Cycle do pino 10 (0 a 100%)
 int PWM11 = 0;            // Variável que atualiza constantemente o Duty Cycle do pino 11 (0 a 100%)
-int freq = 1000;           // Frequência do PWM em Hz, esse valor não será mudado ao longo da execução do código
+int freq = 4000;           // Frequência do PWM em Hz, esse valor não será mudado ao longo da execução do código
 int TC_RC = 42000000/freq;// Variável utilizada para definir a frequência dos pinos que usam Timer Counter
 
 
@@ -271,23 +271,23 @@ void loop() {
     estado_controle = digitalRead(chave_controle);
   
     // Se houver mudanca da chave controle, entao a rampa eh "zerada". Voltando a incrementar do zero
-    if(estado_controle != estado_controle_ant){
+    /*if(estado_controle != estado_controle_ant){
         incremento_rampa = 0;
         estado_controle_ant = estado_controle;
     }
-  
+    */
     // Configura o valor do inicio da rampa de acordo com o selecionado na chave_controle
     // O valor mais baixo eh somente para a arrancada, e o mais alto eh para a pista
     // Os valores podem mudar conforme variar o peso do carro e do piloto
-    if(digitalRead(chave_controle) == HIGH){
+    //if(digitalRead(chave_controle) == HIGH){
        inicio_rampa = 25;
-    }
-    else{
-       inicio_rampa = 50;
-    }
+    //}
+    //else{
+      // inicio_rampa = 50;
+    //}
   
     // Liga o carro se o pedal estiver completamente pressionado. Ou se o acelerador estiver ligado
-    if( digitalRead(acelerador) == LOW || digitalRead(botao1_pedal)){
+    //if( digitalRead(acelerador) == LOW || digitalRead(botao1_pedal) == HIGH ){
       if (incremento_rampa < PWM_MAX - inicio_rampa){            // Se o duty cycle do PWM sobre o gate dos MOSFETs ainda eh menor do que PWM_MAX
         if ((tempo_Atual - tempo_Anterior) >= 70){  // Incrementa a cada 70 milisegundos
           incremento_rampa+=1;
@@ -295,12 +295,13 @@ void loop() {
         }  
       }
       pwwm = incremento_rampa + inicio_rampa;
-    }
-    else{ 
-          incremento_rampa = 0;
-          pwwm = 0;
-    }
-
+      
+    //else{ 
+     //   incremento_rampa = 0;
+      //  pwwm = 0;
+   // }
+  
+  
   hallA_estado = digitalRead(hallA); // variavel recebe o valor do estado do sensor de efeito Hall A do motor
   hallB_estado = digitalRead(hallB); // variavel recebe o valor do estado do sensor de efeito Hall B do motor
   hallC_estado = digitalRead(hallC); // variavel recebe o valor do estado do sensor de efeito Hall C do motor
