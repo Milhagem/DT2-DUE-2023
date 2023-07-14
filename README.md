@@ -1,3 +1,3 @@
 # DT2-DUE-2023
 
-teste
+Código para controlar o motor do DT2
