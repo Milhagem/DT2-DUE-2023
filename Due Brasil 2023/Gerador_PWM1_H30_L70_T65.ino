@@ -295,7 +295,7 @@ void loop() {
     }
   
     // Liga o carro se o pedal estiver completamente pressionado. Ou se o acelerador estiver ligado
-    if( digitalRead(acelerador) == LOW || digitalRead(botao1_pedal)){
+    if( digitalRead(acelerador) == LOW || digitalRead(botao2_pedal)){
       if (incremento_rampa < PWM_MAX - inicio_rampa){            // Se o duty cycle do PWM sobre o gate dos MOSFETs ainda eh menor do que PWM_MAX
         if ((tempo_Atual - tempo_Anterior) >= incremento_tempo){  // Incrementa de acordo com o valor estabelecido do tempo de incremento
           incremento_rampa+=incremento_para_rampa; // Aumento gradual da rampa de acordo com a variável incremento para incremento 
