@@ -54,7 +54,7 @@ int inicio_rampa = 0;     // Valor inicial da rampa
 
 int inicio_rampa_HIGH = 30; //Variável que define o valor inicial da rampa em caso de HIGH
 int inicio_rampa_LOW = 70; // Variável que define o valor inicial da rampa em caso de LOW
-int incremento_tempo = 25; // Variável que permite mudar o valor do tempo de incremento
+int incremento_tempo = 65; // Variável que permite mudar o valor do tempo de incremento
 int incremento_para_rampa = 1; // Variável que permite alterar a amplitude do incremento da rampaSS
 
 
