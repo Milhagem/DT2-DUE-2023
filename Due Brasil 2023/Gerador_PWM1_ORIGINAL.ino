@@ -52,9 +52,9 @@ int incremento_rampa = 0; // Duty cycle em % , de 0 a 100%
 int inicio_rampa = 0;     // Valor inicial da rampa
 
 
-int inicio_rampa_HIGH = 30; //Variável que define o valor inicial da rampa em caso de HIGH
-int inicio_rampa_LOW = 60; // Variável que define o valor inicial da rampa em caso de LOW
-int incremento_tempo = 50; // Variável que permite mudar o valor do tempo de incremento
+int inicio_rampa_HIGH = 25; //Variável que define o valor inicial da rampa em caso de HIGH
+int inicio_rampa_LOW = 50; // Variável que define o valor inicial da rampa em caso de LOW
+int incremento_tempo = 70; // Variável que permite mudar o valor do tempo de incremento
 int incremento_para_rampa = 1; // Variável que permite alterar a amplitude do incremento da rampaSS
 
 
@@ -295,7 +295,7 @@ void loop() {
     }
   
     // Liga o carro se o pedal estiver completamente pressionado. Ou se o acelerador estiver ligado
-    if( digitalRead(acelerador) == LOW || digitalRead(botao1_pedal)){
+    if( digitalRead(acelerador) == LOW || digitalRead(botao2_pedal)){
       if (incremento_rampa < PWM_MAX - inicio_rampa){            // Se o duty cycle do PWM sobre o gate dos MOSFETs ainda eh menor do que PWM_MAX
         if ((tempo_Atual - tempo_Anterior) >= incremento_tempo){  // Incrementa de acordo com o valor estabelecido do tempo de incremento
           incremento_rampa+=incremento_para_rampa; // Aumento gradual da rampa de acordo com a variável incremento para incremento 
