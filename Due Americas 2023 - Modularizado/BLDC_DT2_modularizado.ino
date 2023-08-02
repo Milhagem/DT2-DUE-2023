@@ -5,7 +5,7 @@
  *  O Arduino recebe sinal dos sensores de efeito hall e comuta os mosfets de acordo com os valores lidos
  *  O motor eh ligado apenas sob certas condicoes de interruptores e fins de curso
  *  A entrada para o motor eh uma entrada rampa, com incremento gradual
- * @date 2023-06-29
+ * @date 2023-08-02
  * 
  */
 
@@ -55,11 +55,18 @@ unsigned long tempo_Atual = 0, tempo_Anterior = 0; // Servem para incrementar o 
 // Variaveis Relevantes
 int incremento_rampa = 0; // Duty cycle em % , de 0 a 100%
 int inicio_rampa = 0;     // Valor inicial da rampa
+
+int inicio_rampa_HIGH = 25; //Variável que define o valor inicial da rampa em caso de HIGH
+int inicio_rampa_LOW = 50; // Variável que define o valor inicial da rampa em caso de LOW
+int incremento_tempo = 70; // Variável que permite mudar o valor do tempo de incremento
+int incremento_para_rampa = 1; // Variável que permite alterar a amplitude do incremento da rampaSS
+
 int pwwm = 0;             // Armazena o PWM que ira para os MOSFETs (0 a 100%)
 int PWM6 = 0;             // Variável que atualiza constantemente o Duty Cycle do pino 6 (0 a 100%)
 int PWM7 = 0;            // Variável que atualiza constantemente o Duty Cycle do pino 7 (0 a 100%)
 int PWM8 = 0;            // Variável que atualiza constantemente o Duty Cycle do pino 8 (0 a 100%)
-int freq = 1000;           // Frequência do PWM em Hz, esse valor não será mudado ao longo da execução do código
+
+int freq = 21000;           // Frequência do PWM em Hz, esse valor não será mudado ao longo da execução do código
 
 //Criação dos objetos pino, para controlar o motor
 Pin pino6(6, PWM6); //Variável que controla o pino 6
@@ -121,17 +128,17 @@ void loop() {
     // O valor mais baixo eh somente para a arrancada, e o mais alto eh para a pista
     // Os valores podem mudar conforme variar o peso do carro e do piloto
     if(digitalRead(chave_controle) == HIGH){
-       inicio_rampa = 25;
+       inicio_rampa = inicio_rampa_HIGH;
     }
     else{
-       inicio_rampa = 50;
+       inicio_rampa = inicio_rampa_LOW;
     }
   
     // Liga o carro se o pedal estiver completamente pressionado. Ou se o acelerador estiver ligado
-    if(digitalRead(acelerador) == LOW || digitalRead(botao1_pedal)){
+    if( digitalRead(acelerador) == LOW || digitalRead(botao2_pedal)){
       if (incremento_rampa < PWM_MAX - inicio_rampa){            // Se o duty cycle do PWM sobre o gate dos MOSFETs ainda eh menor do que PWM_MAX
-        if ((tempo_Atual - tempo_Anterior) >= 70){  // Incrementa a cada 70 milisegundos
-          incremento_rampa+=1;
+        if ((tempo_Atual - tempo_Anterior) >= incremento_tempo){  // Incrementa de acordo com o valor estabelecido do tempo de incremento
+          incremento_rampa+=incremento_para_rampa; // Aumento gradual da rampa de acordo com a variável incremento para incremento 
           tempo_Anterior = tempo_Atual;
         }  
       }
@@ -249,6 +256,25 @@ void loop() {
     pino6.duty_cycle_pin(pwwm);
     pino6.enable_pin();             // Pino 6 (AL) com PWM ativo
     break;
+    /* ----------------------------------------------------------------------------------------------------------------------- */
+    // CASO PROIBIDO 000
+  case 0:
+    PIOC->PIO_CODR = 1<<21;   // Pino 9 (AH) desligado
+    PIOC->PIO_CODR = 1<<29;   // Pino 10 (BH) desligado
+    PIOC->PIO_CODR = 1<<7;   // Pino 11 (CH) desligado
+    pino6.disable_pin();      // Pino 6 (AL) desligado
+    pino7.disable_pin();      // Pino 7 (BL) desligado
+    pino8.disable_pin();      // Pino 8 (CL) desligado
+    break;
+    /* ----------------------------------------------------------------------------------------------------------------------- */
+    // CASO PROIBIDO 111
+  case 7:
+    PIOC->PIO_CODR = 1<<21;   // Pino 9 (AH) desligado
+    PIOC->PIO_CODR = 1<<29;   // Pino 10 (BH) desligado
+    PIOC->PIO_CODR = 1<<7;   // Pino 11 (CH) desligado
+    pino6.disable_pin();      // Pino 6 (AL) desligado
+    pino7.disable_pin();      // Pino 7 (BL) desligado
+    pino8.disable_pin();      // Pino 8 (CL) desligado
+    break;   
   }
-
 }
