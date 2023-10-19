@@ -62,7 +62,7 @@ int pwwm = 0;             // Armazena o PWM que ira para os MOSFETs (0 a 100%)
 int PWM9 = 0;             // Variável que atualiza constantemente o Duty Cycle do pino 9 (0 a 100%)
 int PWM10 = 0;            // Variável que atualiza constantemente o Duty Cycle do pino 10 (0 a 100%)
 int PWM11 = 0;            // Variável que atualiza constantemente o Duty Cycle do pino 11 (0 a 100%)
-int freq = 1000;           // Frequência do PWM em Hz, esse valor não será mudado ao longo da execução do código
+int freq = 21000;           // Frequência do PWM em Hz, esse valor não será mudado ao longo da execução do código
 int TC_RC = 42000000/freq;// Variável utilizada para definir a frequência dos pinos que usam Timer Counter
 
 
@@ -415,6 +415,26 @@ void loop() {
     PIOC->PIO_SODR = 1<<23;   // Pino 7 (CH) ligado
     DutyCyclePin9(pwwm);
     EnablePin9();             // Pino 9 (AL) com PWM ativo
+    break;
+    /* ----------------------------------------------------------------------------------------------------------------------- */
+    // CASO PROIBIDO 000
+  case 0:
+    PIOC->PIO_CODR = 1<<25;   // Pino 5 (AH) desligado
+    PIOC->PIO_CODR = 1<<24;   // Pino 6 (BH) desligado
+    PIOC->PIO_CODR = 1<<23;   // Pino 7 (CH) desligado
+    DisablePin9();            // Pino 9 (AL) desligado
+    DisablePin10();           // Pino 10 (BL) desligado
+    DisablePin11();           // Pino 11 (CL) desligado
+    break;
+    /* ----------------------------------------------------------------------------------------------------------------------- */
+    // CASO PROIBIDO 111
+  case 7:
+    PIOC->PIO_CODR = 1<<25;   // Pino 5 (AH) desligado
+    PIOC->PIO_CODR = 1<<24;   // Pino 6 (BH) desligado
+    PIOC->PIO_CODR = 1<<23;   // Pino 7 (CH) desligado
+    DisablePin9();            // Pino 9 (AL) desligado
+    DisablePin10();           // Pino 10 (BL) desligado
+    DisablePin11();           // Pino 11 (CL) desligado
     break;
   }
 }
